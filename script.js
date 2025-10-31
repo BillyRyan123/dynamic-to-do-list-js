@@ -1,9 +1,37 @@
 document.addEventListener('DOMContentLoaded', function(){
+   let task = JSON.parse(localStorage.getItem('tasks'))  || [];
+
+
     const taskInput = document.getElementById('task-input');
     const addButton = document.getElementById('add-task-btn');
      const taskList= document.getElementById('task-list');
 
-     
+    function saveTasks() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+  
+  // Function to display tasks from the tasks array
+  function renderTasks() {
+    taskList.innerHTML = ''; // clear current list
+    tasks.forEach(function (taskText, index) {
+      const listElement = document.createElement('li');
+      listElement.textContent = taskText;
+
+      // Create remove button
+      const removeBtn = document.createElement('button');
+      removeBtn.textContent = 'Remove';
+      removeBtn.className = 'remove-btn';
+      removeBtn.onclick = function () {
+        tasks.splice(index, 1); // remove from array
+        saveTasks(); // update localStorage
+        renderTasks(); // re-render updated list
+      };
+
+      listElement.appendChild(removeBtn);
+      taskList.appendChild(listElement);
+    });
+  }
+
 function addTask(){
    const taskText = taskInput.value.trim();
 
@@ -36,5 +64,6 @@ taskInput.addEventListener('keypress', function(event){
       addTask();
    }
 } );
+renderTasks();
 }
 );
